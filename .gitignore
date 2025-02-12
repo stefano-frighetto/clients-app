@@ -1,0 +1,38 @@
+# Compilación
+bin/
+obj/
+
+# Configuración del usuario
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Logs y archivos de depuración
+*.log
+*.tlog
+*.bak
+*.swp
+*.pdb
+
+# Configuración de Visual Studio
+.vscode/
+*.vsconfig
+.vs/
+
+# Paquetes NuGet
+packages/
+*.nupkg
+
+# Dependencias locales
+.env
+secrets.json
+appsettings.Development.json
+
+# Publicación y despliegue
+publish/
+out/
+
+# Archivos de lock y caché
+global.json
+.project.nuget.cache
