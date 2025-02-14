@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ClientApi.Controllers
 {
-    [Route("[controller]")]
+    [Route("client")]
     [ApiController]
     public class ClientsController : ControllerBase
     {
