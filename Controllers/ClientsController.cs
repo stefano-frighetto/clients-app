@@ -60,6 +60,16 @@ namespace ClientApi.Controllers
         [HttpPost]
         public async Task<ActionResult<Client>> CreateClient(CreateClientDto clientDto)
         {
+            var existingConflict = await _context.Clients
+                .Where(c => c.CUIT == clientDto.CUIT || c.Email == clientDto.Email)
+                .Select(c => new { c.CUIT, c.Email })
+                .FirstOrDefaultAsync();
+
+            if (existingConflict != null)
+            {
+                return Conflict($"Ya existe un cliente registrado con el {(existingConflict.CUIT == clientDto.CUIT ? $"CUIT {clientDto.CUIT}" : $"email {clientDto.Email}")}");
+            }
+
             var newClient = new Client
             {
                 FirstName = clientDto.FirstName,
