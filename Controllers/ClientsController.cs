@@ -11,15 +11,18 @@ namespace ClientApi.Controllers
     public class ClientsController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
+        private readonly ILogger<ClientsController> _logger;
 
-        public ClientsController(ApplicationDbContext context)
+        public ClientsController(ApplicationDbContext context, ILogger<ClientsController> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Client>>> GetClients()
         {
+            _logger.LogInformation("Retrieving all clients from the database.");
             var clients = await _context.Clients.ToListAsync();
             return Ok(clients);
         }
@@ -31,6 +34,7 @@ namespace ClientApi.Controllers
             
             if (client == null)
             {
+                _logger.LogWarning("Client with Id {ClientId} not found.", id);
                 return NotFound("No client with the corresponding Id was found");
             }
 
@@ -45,12 +49,15 @@ namespace ClientApi.Controllers
                 return await GetClients();
             }
 
+            _logger.LogInformation("Searching clients with name containing: {Name}", name);
+
             var clients = await _context.Clients
                 .FromSqlRaw("SELECT * FROM search_clients(@p0)", name)
                 .ToListAsync();
 
             if (clients.Count == 0)
             {
+                _logger.LogInformation("No clients found matching the search criteria: {Name}", name);
                 return NotFound("No clients were found");
             }
 
@@ -67,7 +74,9 @@ namespace ClientApi.Controllers
 
             if (existingConflict != null)
             {
-                return Conflict($"Ya existe un cliente registrado con el {(existingConflict.CUIT == clientDto.CUIT ? $"CUIT {clientDto.CUIT}" : $"email {clientDto.Email}")}");
+                string msg = $"There is already a registered customer with the field {(existingConflict.CUIT == clientDto.CUIT ? $"CUIT = {clientDto.CUIT}" : $"email = {clientDto.Email}")}";
+                _logger.LogWarning("Conflict when creating client: {Message}", msg);
+                return Conflict(msg);
             }
 
             var newClient = new Client
@@ -83,6 +92,8 @@ namespace ClientApi.Controllers
 
             _context.Clients.Add(newClient);
             await _context.SaveChangesAsync();
+
+            _logger.LogInformation("Created new client with Id {ClientId}", newClient.ClientId);
 
             return CreatedAtAction(nameof(GetClient), new { id = newClient.ClientId }, newClient);
         }
@@ -111,6 +122,7 @@ namespace ClientApi.Controllers
             existingClient.Email = updatedClient.Email;
 
             await _context.SaveChangesAsync();
+            _logger.LogInformation("Updated client with Id {ClientId}", id);
 
             return Ok(existingClient);
         }
@@ -127,6 +139,7 @@ namespace ClientApi.Controllers
 
             _context.Clients.Remove(client);
             await _context.SaveChangesAsync();
+            _logger.LogInformation("Deleted client with Id {ClientId}", id);
 
             return NoContent();
         }
