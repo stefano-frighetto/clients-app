@@ -82,9 +82,9 @@ namespace ClientApi.Controllers
 
             existingClient.FirstName = updatedClient.FirstName;
             existingClient.LastName = updatedClient.LastName;
-            existingClient.Birthdate = updatedClient.Birthdate;
+            existingClient.CorporateName = updatedClient.CorporateName;
             existingClient.CUIT = updatedClient.CUIT;
-            existingClient.Address = updatedClient.Address;
+            existingClient.Birthdate = updatedClient.Birthdate;
             existingClient.CellPhone = updatedClient.CellPhone;
             existingClient.Email = updatedClient.Email;
 

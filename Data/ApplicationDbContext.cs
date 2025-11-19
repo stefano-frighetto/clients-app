@@ -23,7 +23,7 @@ namespace ClientApi.Data
                 entity.Property(e => e.LastName).HasColumnName("apellido");
                 entity.Property(e => e.CorporateName).HasColumnName("razon_social");
                 entity.Property(e => e.CUIT).HasColumnName("cuit");
-                entity.Property(e => e.Birthdate).HasColumnName("fecha_nacimiento");
+                entity.Property(e => e.Birthdate).HasColumnName("fecha_nacimiento").HasColumnType("date");
                 entity.Property(e => e.CellPhone).HasColumnName("telefono_celular");
                 entity.Property(e => e.Email).HasColumnName("email");
             });
