@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ClientApi.Controllers
 {
-    [Route("client")]
+    [Route("clients")]
     [ApiController]
     public class ClientsController : ControllerBase
     {
@@ -91,6 +91,22 @@ namespace ClientApi.Controllers
             await _context.SaveChangesAsync();
 
             return Ok(existingClient);
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> DeleteClient(int id)
+        {
+            var client = await _context.Clients.FindAsync(id);
+
+            if (client == null)
+            {
+                return NotFound("No client");
+            }
+
+            _context.Clients.Remove(client);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
         }
     }
 }
