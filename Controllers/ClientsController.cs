@@ -1,4 +1,5 @@
 ﻿using ClientApi.Data;
+using ClientApi.DTOs;
 using ClientApi.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -45,7 +46,7 @@ namespace ClientApi.Controllers
             }
 
             var clients = await _context.Clients
-                .Where(c => c.FirstName.Contains(name))
+                .FromSqlRaw("SELECT * FROM search_clients(@p0)", name)
                 .ToListAsync();
 
             if (clients.Count == 0)
@@ -57,8 +58,29 @@ namespace ClientApi.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<Client>> CreateClient(Client newClient)
+        public async Task<ActionResult<Client>> CreateClient(CreateClientDto clientDto)
         {
+            var existingConflict = await _context.Clients
+                .Where(c => c.CUIT == clientDto.CUIT || c.Email == clientDto.Email)
+                .Select(c => new { c.CUIT, c.Email })
+                .FirstOrDefaultAsync();
+
+            if (existingConflict != null)
+            {
+                return Conflict($"Ya existe un cliente registrado con el {(existingConflict.CUIT == clientDto.CUIT ? $"CUIT {clientDto.CUIT}" : $"email {clientDto.Email}")}");
+            }
+
+            var newClient = new Client
+            {
+                FirstName = clientDto.FirstName,
+                LastName = clientDto.LastName,
+                CorporateName = clientDto.CorporateName,
+                CUIT = clientDto.CUIT,
+                Birthdate = clientDto.Birthdate,
+                CellPhone = clientDto.CellPhone,
+                Email = clientDto.Email
+            };
+
             _context.Clients.Add(newClient);
             await _context.SaveChangesAsync();
 
