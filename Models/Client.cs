@@ -12,7 +12,6 @@ namespace ClientApi.Models
         [Required]
         public string LastName { get; set; }
 
-
         [Required]
         public string CorporateName { get; set; }
 
