@@ -32,7 +32,6 @@ global.json
 .project.nuget.cache
 .env
 secrets.json
-appsettings.Development.json
 .sonarqube/
 
 # ==========================
