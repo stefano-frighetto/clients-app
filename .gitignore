@@ -33,6 +33,11 @@ global.json
 .env
 secrets.json
 .sonarqube/
+TestResults/
+*.trx
+*.coverage
+*.coveragexml
+coverage.json
 
 # ==========================
 # FRONTEND

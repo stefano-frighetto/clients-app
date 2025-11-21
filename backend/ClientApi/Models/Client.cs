@@ -1,9 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace ClientApi.Models
 {
     public class Client
     {
+        [JsonRequired]
         public int ClientId { get; set; }
 
         [Required]
@@ -21,7 +23,7 @@ namespace ClientApi.Models
 
         [Required]
         [DataType(DataType.Date)]
-        public DateTime Birthdate { get; set; }
+        public required DateTime Birthdate { get; set; }
 
         [Required]
         [RegularExpression(@"^\d{10}$", ErrorMessage = "Invalid phone number. Must be 10 consecutive numbers only.")]

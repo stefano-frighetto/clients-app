@@ -19,7 +19,7 @@ namespace ClientApi.DTOs
 
         [Required]
         [DataType(DataType.Date)]
-        public DateTime Birthdate { get; set; }
+        public required DateTime Birthdate { get; set; }
 
         [Required]
         [RegularExpression(@"^\d{10}$", ErrorMessage = "Invalid phone number. Must be 10 consecutive numbers only.")]
